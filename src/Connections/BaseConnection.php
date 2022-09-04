@@ -146,4 +146,14 @@ abstract class BaseConnection extends MySqlConnection
 
         return Arr::get($this->config, 'params', []);
     }
+
+    /**
+     * Return parameters to decide where we want Commands to run against
+     *
+     * @return array
+     */
+    protected function getInteractiveParameters(): array
+    {
+        return [];
+    }
 }
