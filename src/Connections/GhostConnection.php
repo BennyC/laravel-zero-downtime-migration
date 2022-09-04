@@ -20,6 +20,7 @@ class GhostConnection extends BaseConnection
                 'gh-ost',
             ],
             $this->getAdditionalParameters(),
+            $this->getInteractiveParameters(),
             [
                 sprintf('--user=%s', $this->getConfig('username')),
                 sprintf('--password=%s', $this->getConfig('password')),

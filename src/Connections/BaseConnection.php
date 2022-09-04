@@ -6,6 +6,7 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Database\MySqlConnection;
 use Illuminate\Support\Arr;
+use InvalidArgumentException;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Process\Exception\RuntimeException;
 use Symfony\Component\Process\Process;
@@ -137,8 +138,7 @@ abstract class BaseConnection extends MySqlConnection
         // Check for breaking changes and display a warning
         if (collect(Arr::get($this->config, 'options', []))->contains(function ($value) {
             return str_starts_with($value, '--');
-        }))
-        {
+        })) {
             $this->output('[Warning] Detected additional parameters passed under "options" array.'
             .' This has been migrated to "params" array in v1, please check the laravel-zero-downtime-migration'
             .' upgrade documentation.');
@@ -154,6 +154,17 @@ abstract class BaseConnection extends MySqlConnection
      */
     protected function getInteractiveParameters(): array
     {
-        return [];
+        switch (config('zero-down.via')) {
+            case 'socket':
+                return [
+                    '--serve-socket-file' => config('zero-down.resource'),
+                ];
+            case 'tcp':
+                return [
+                    '--serve-tcp-port' => config('zero-down.resource'),
+                ];
+            default:
+                throw new InvalidArgumentException('Unsupported "via" option provided');
+        }
     }
 }

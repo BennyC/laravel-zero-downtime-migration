@@ -2,6 +2,7 @@
 
 namespace Daursu\ZeroDowntimeMigration;
 
+use Daursu\ZeroDowntimeMigration\Commands\Status;
 use Daursu\ZeroDowntimeMigration\Connections\GhostConnection;
 use Daursu\ZeroDowntimeMigration\Connections\PtOnlineSchemaChangeConnection;
 use Illuminate\Database\Connection;
@@ -19,6 +20,12 @@ class ServiceProvider extends IlluminateServiceProvider
     {
         $configPath = __DIR__ . '/../config/zero-down.php';
         $this->publishes([$configPath => config_path('zero-down.php')], 'config');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                Status::class,
+            ]);
+        }
     }
 
     /**
