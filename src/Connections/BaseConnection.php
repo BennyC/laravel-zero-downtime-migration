@@ -6,13 +6,14 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Database\MySqlConnection;
 use Illuminate\Support\Arr;
-use InvalidArgumentException;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Process\Exception\RuntimeException;
 use Symfony\Component\Process\Process;
 
 abstract class BaseConnection extends MySqlConnection
 {
+    abstract protected function getInteractiveParameters(): array;
+
     /**
      * Runs the pt-online-schema-change process.
      *
@@ -145,26 +146,5 @@ abstract class BaseConnection extends MySqlConnection
         }
 
         return Arr::get($this->config, 'params', []);
-    }
-
-    /**
-     * Return parameters to decide where we want Commands to run against
-     *
-     * @return array
-     */
-    protected function getInteractiveParameters(): array
-    {
-        switch (config('zero-down.via')) {
-            case 'socket':
-                return [
-                    '--serve-socket-file' => config('zero-down.resource'),
-                ];
-            case 'tcp':
-                return [
-                    '--serve-tcp-port' => config('zero-down.resource'),
-                ];
-            default:
-                throw new InvalidArgumentException('Unsupported "via" option provided');
-        }
     }
 }

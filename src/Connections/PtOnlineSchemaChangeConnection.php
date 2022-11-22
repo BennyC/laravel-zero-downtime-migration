@@ -60,4 +60,9 @@ class PtOnlineSchemaChangeConnection extends BaseConnection
             return preg_replace('/('.preg_quote($this->getConfig('username'), '/').'),/', '*****,', $config);
         })->implode(' ');
     }
+
+    protected function getInteractiveParameters(): array
+    {
+        return [];
+    }
 }

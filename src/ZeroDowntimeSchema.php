@@ -48,6 +48,9 @@ class ZeroDowntimeSchema extends Schema
             return parent::table($table, $callback);
         }
 
+        // TODO instance check against our drivers
+        // TODO provide extra flags down to connection driver
+
         return parent::connection(static::$connection)->table($table, $callback);
     }
 }
